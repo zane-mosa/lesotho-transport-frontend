@@ -40,10 +40,11 @@ function DriverDashboard() {
 
     const token = localStorage.getItem('token');
 
-    useEffect(() => {
-        loadAssignedVehicle();
-        loadDashboard();
-    }, []); // Empty dependency array - OK for initial load
+   useEffect(() => {
+    loadAssignedVehicle();
+    loadDashboard();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+}, []);
 
     const loadAssignedVehicle = async () => {
         try {

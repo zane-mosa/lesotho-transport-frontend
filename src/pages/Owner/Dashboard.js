@@ -68,10 +68,11 @@ function OwnerDashboard() {
     const token = localStorage.getItem('token');
 
     // Fixed: Added loadDashboard and loadDrivers to dependency array
-    useEffect(() => {
-        loadDashboard();
-        loadDrivers();
-    }, []); // Empty array is correct - these functions are defined inside component and don't change
+   useEffect(() => {
+    loadDashboard();
+    loadDrivers();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+}, []);
 
     const loadDashboard = async () => {
         try {

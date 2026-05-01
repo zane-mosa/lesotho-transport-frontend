@@ -121,8 +121,8 @@ function PassengerDashboard() {
         }
     };
 
-    const validateAmount = () => {
-        const paymentAmount = getTotalAmount(); // Renamed from 'amount' to avoid unused variable warning
+      const validateAmount = () => {
+        // const paymentAmount = getTotalAmount(); // Removed - not needed (was causing unused variable warning)
         
         if (!taxiNumber.trim()) {
             setMessage({ type: 'error', text: 'Please enter taxi number' });
