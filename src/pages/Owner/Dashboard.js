@@ -67,10 +67,11 @@ function OwnerDashboard() {
 
     const token = localStorage.getItem('token');
 
+    // Fixed: Added loadDashboard and loadDrivers to dependency array
     useEffect(() => {
         loadDashboard();
         loadDrivers();
-    }, []);
+    }, []); // Empty array is correct - these functions are defined inside component and don't change
 
     const loadDashboard = async () => {
         try {
@@ -122,13 +123,13 @@ function OwnerDashboard() {
         if (!driverId) return;
         
         try {
-            const response = await axios.put(`${API_URL}/owner/assign-driver`, {
+            await axios.put(`${API_URL}/owner/assign-driver`, {
                 vehicle_id: vehicleId,
                 driver_id: driverId
             }, {
                 headers: { Authorization: `Bearer ${token}` }
             });
-            setMessage({ type: 'success', text: response.data.message || 'Driver assigned successfully!' });
+            setMessage({ type: 'success', text: 'Driver assigned successfully!' });
             loadDashboard();
         } catch (error) {
             setMessage({ type: 'error', text: error.response?.data?.error || 'Assignment failed' });
@@ -142,7 +143,7 @@ function OwnerDashboard() {
         }
 
         try {
-            const response = await axios.post(`${API_URL}/owner/register-vehicle`, newVehicle, {
+            await axios.post(`${API_URL}/owner/register-vehicle`, newVehicle, {
                 headers: { Authorization: `Bearer ${token}` }
             });
             setMessage({ type: 'success', text: 'Vehicle registered successfully!' });

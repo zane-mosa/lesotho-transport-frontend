@@ -13,23 +13,23 @@ function ConfirmPayment() {
     const [message, setMessage] = useState(null);
 
     useEffect(() => {
+        const checkTransaction = async () => {
+            try {
+                // Fetch transaction details
+                const response = await fetch(`http://localhost:3000/api/payments/status/${reference}`, {
+                    headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
+                });
+                const data = await response.json();
+                setTransaction(data.transaction);
+                setLoading(false);
+            } catch (error) {
+                setMessage({ type: 'error', text: 'Failed to load transaction' });
+                setLoading(false);
+            }
+        };
+        
         checkTransaction();
-    }, []);
-
-    const checkTransaction = async () => {
-        try {
-            // Fetch transaction details
-            const response = await fetch(`http://localhost:3000/api/payments/status/${reference}`, {
-                headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
-            });
-            const data = await response.json();
-            setTransaction(data.transaction);
-            setLoading(false);
-        } catch (error) {
-            setMessage({ type: 'error', text: 'Failed to load transaction' });
-            setLoading(false);
-        }
-    };
+    }, [reference]); // Added reference as dependency
 
     const confirmPayment = async () => {
         try {

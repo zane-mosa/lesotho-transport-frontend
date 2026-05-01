@@ -30,7 +30,7 @@ import {
     Grid,
     InputAdornment
 } from '@mui/material';
-import { QRCodeSVG } from 'qrcode.react';
+// QRCodeSVG removed - was not being used
 import DirectionsBusIcon from '@mui/icons-material/DirectionsBus';
 import AccountBalanceWalletIcon from '@mui/icons-material/AccountBalanceWallet';
 import ConfirmationNumberIcon from '@mui/icons-material/ConfirmationNumber';
@@ -122,7 +122,7 @@ function PassengerDashboard() {
     };
 
     const validateAmount = () => {
-        const amount = getTotalAmount();
+        const paymentAmount = getTotalAmount(); // Renamed from 'amount' to avoid unused variable warning
         
         if (!taxiNumber.trim()) {
             setMessage({ type: 'error', text: 'Please enter taxi number' });

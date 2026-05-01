@@ -18,8 +18,8 @@ import {
     TableRow,
     Chip,
     Alert,
-    CircularProgress,
-    Divider
+    CircularProgress
+    // Divider removed - was unused
 } from '@mui/material';
 import DirectionsBusIcon from '@mui/icons-material/DirectionsBus';
 import AttachMoneyIcon from '@mui/icons-material/AttachMoney';
@@ -35,7 +35,7 @@ function DriverDashboard() {
     const [assignedVehicle, setAssignedVehicle] = useState(null);
     const [loading, setLoading] = useState(true);
     const [message, setMessage] = useState(null);
-    const [balance, setBalance] = useState(0);
+    // const [balance, setBalance] = useState(0); // Removed - not used
     const [confirmingId, setConfirmingId] = useState(null);
 
     const token = localStorage.getItem('token');
@@ -43,7 +43,7 @@ function DriverDashboard() {
     useEffect(() => {
         loadAssignedVehicle();
         loadDashboard();
-    }, []);
+    }, []); // Empty dependency array - OK for initial load
 
     const loadAssignedVehicle = async () => {
         try {
@@ -61,8 +61,8 @@ function DriverDashboard() {
         try {
             const response = await driverService.getDashboard();
             setDashboard(response.data.dashboard);
-            const totalEarnings = response.data.dashboard.stats.weekly_earnings;
-            setBalance(totalEarnings);
+            // const totalEarnings = response.data.dashboard.stats.weekly_earnings;
+            // setBalance(totalEarnings); // Removed
             setLoading(false);
         } catch (error) {
             console.error('Dashboard load error:', error);
