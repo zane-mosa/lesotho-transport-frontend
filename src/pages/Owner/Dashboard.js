@@ -40,9 +40,7 @@ import PeopleIcon from '@mui/icons-material/People';
 import AccountBalanceWalletIcon from '@mui/icons-material/AccountBalanceWallet';
 import AddIcon from '@mui/icons-material/Add';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import axios from 'axios';
-
-const API_URL = 'http://localhost:3000/api';
+import api from '../../services/api';
 
 function OwnerDashboard() {
     const [dashboard, setDashboard] = useState(null);
@@ -67,18 +65,15 @@ function OwnerDashboard() {
 
     const token = localStorage.getItem('token');
 
-    // Fixed: Added loadDashboard and loadDrivers to dependency array
-   useEffect(() => {
-    loadDashboard();
-    loadDrivers();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-}, []);
+    useEffect(() => {
+        loadDashboard();
+        loadDrivers();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
 
     const loadDashboard = async () => {
         try {
-            const response = await axios.get(`${API_URL}/owner/dashboard`, {
-                headers: { Authorization: `Bearer ${token}` }
-            });
+            const response = await api.get('/owner/dashboard');
             setDashboard(response.data.dashboard);
             setVehicles(response.data.dashboard.vehicles);
             
@@ -97,9 +92,7 @@ function OwnerDashboard() {
 
     const loadVehicleTransactions = async (vehicleId, taxiNumber) => {
         try {
-            const response = await axios.get(`${API_URL}/owner/vehicle-transactions/${vehicleId}`, {
-                headers: { Authorization: `Bearer ${token}` }
-            });
+            const response = await api.get(`/owner/vehicle-transactions/${vehicleId}`);
             setVehicleTransactions(prev => ({
                 ...prev,
                 [taxiNumber]: response.data.transactions
@@ -111,9 +104,7 @@ function OwnerDashboard() {
 
     const loadDrivers = async () => {
         try {
-            const response = await axios.get(`${API_URL}/owner/drivers`, {
-                headers: { Authorization: `Bearer ${token}` }
-            });
+            const response = await api.get('/owner/drivers');
             setDrivers(response.data.drivers);
         } catch (error) {
             console.error('Drivers error:', error);
@@ -124,11 +115,9 @@ function OwnerDashboard() {
         if (!driverId) return;
         
         try {
-            await axios.put(`${API_URL}/owner/assign-driver`, {
+            await api.put('/owner/assign-driver', {
                 vehicle_id: vehicleId,
                 driver_id: driverId
-            }, {
-                headers: { Authorization: `Bearer ${token}` }
             });
             setMessage({ type: 'success', text: 'Driver assigned successfully!' });
             loadDashboard();
@@ -144,9 +133,7 @@ function OwnerDashboard() {
         }
 
         try {
-            await axios.post(`${API_URL}/owner/register-vehicle`, newVehicle, {
-                headers: { Authorization: `Bearer ${token}` }
-            });
+            await api.post('/owner/register-vehicle', newVehicle);
             setMessage({ type: 'success', text: 'Vehicle registered successfully!' });
             setOpenRegisterVehicle(false);
             setNewVehicle({
@@ -173,12 +160,10 @@ function OwnerDashboard() {
         }
 
         try {
-            const response = await axios.post(`${API_URL}/owner/withdraw`, {
+            const response = await api.post('/owner/withdraw', {
                 amount: parseFloat(withdrawAmount),
                 payment_method: withdrawMethod,
                 phone_number: withdrawPhone
-            }, {
-                headers: { Authorization: `Bearer ${token}` }
             });
             
             setMessage({ type: 'success', text: response.data.message });
@@ -219,9 +204,8 @@ function OwnerDashboard() {
                     </Alert>
                 )}
 
-                {/* Stats Cards - UPDATED to show Available Balance */}
+                {/* Stats Cards */}
                 <Grid container spacing={3} sx={{ mb: 4 }}>
-                    {/* Available Balance Card - NEW */}
                     <Grid item xs={12} md={3}>
                         <Card sx={{ bgcolor: '#e8f5e9' }}>
                             <CardContent>
@@ -355,7 +339,6 @@ function OwnerDashboard() {
                                         </Box>
                                     </AccordionSummary>
                                     <AccordionDetails>
-                                        {/* Vehicle Stats */}
                                         <Grid container spacing={2} sx={{ mb: 3 }}>
                                             <Grid item xs={12} md={6}>
                                                 <Card sx={{ bgcolor: '#e8f5e9' }}>
@@ -383,7 +366,6 @@ function OwnerDashboard() {
                                             </Grid>
                                         </Grid>
 
-                                        {/* Vehicle Info */}
                                         <Paper sx={{ p: 2, mb: 2 }}>
                                             <Typography variant="subtitle1" sx={{ fontWeight: 'bold' }}>
                                                 🚕 Vehicle Information
@@ -408,7 +390,6 @@ function OwnerDashboard() {
                                             </Grid>
                                         </Paper>
 
-                                        {/* Assign Driver */}
                                         <FormControl sx={{ mt: 2, minWidth: 250, mb: 2 }}>
                                             <InputLabel>Assign/Change Driver</InputLabel>
                                             <Select
@@ -430,7 +411,6 @@ function OwnerDashboard() {
                                             </Select>
                                         </FormControl>
 
-                                        {/* Vehicle Transactions */}
                                         <Typography variant="subtitle1" sx={{ fontWeight: 'bold', mb: 2 }}>
                                             📋 Recent Transactions
                                         </Typography>

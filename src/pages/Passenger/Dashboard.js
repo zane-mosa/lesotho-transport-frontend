@@ -30,10 +30,10 @@ import {
     Grid,
     InputAdornment
 } from '@mui/material';
-// QRCodeSVG removed - was not being used
 import DirectionsBusIcon from '@mui/icons-material/DirectionsBus';
 import AccountBalanceWalletIcon from '@mui/icons-material/AccountBalanceWallet';
 import ConfirmationNumberIcon from '@mui/icons-material/ConfirmationNumber';
+import api from '../../services/api';
 
 function PassengerDashboard() {
     const [tripType, setTripType] = useState('local');
@@ -80,7 +80,7 @@ function PassengerDashboard() {
         }
     };
 
-    // Updated checkTaxiNumber function - sends taxi number in uppercase
+    // Updated checkTaxiNumber function - uses api instance
     const checkTaxiNumber = async () => {
         if (!taxiNumber.trim()) {
             setTaxiValid(null);
@@ -91,8 +91,8 @@ function PassengerDashboard() {
         setCheckingTaxi(true);
         try {
             const upperTaxiNumber = taxiNumber.toUpperCase();
-            const response = await fetch(`http://localhost:3000/api/driver/check-taxi/${upperTaxiNumber}`);
-            const data = await response.json();
+            const response = await api.get(`/driver/check-taxi/${upperTaxiNumber}`);
+            const data = response.data;
             console.log('Check taxi response:', data);
             
             if (data.valid) {
@@ -121,9 +121,7 @@ function PassengerDashboard() {
         }
     };
 
-      const validateAmount = () => {
-        // const paymentAmount = getTotalAmount(); // Removed - not needed (was causing unused variable warning)
-        
+    const validateAmount = () => {
         if (!taxiNumber.trim()) {
             setMessage({ type: 'error', text: 'Please enter taxi number' });
             return false;
