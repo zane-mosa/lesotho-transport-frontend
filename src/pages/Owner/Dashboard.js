@@ -40,6 +40,7 @@ import PeopleIcon from '@mui/icons-material/People';
 import AccountBalanceWalletIcon from '@mui/icons-material/AccountBalanceWallet';
 import AddIcon from '@mui/icons-material/Add';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import DeleteIcon from '@mui/icons-material/Delete';
 import api from '../../services/api';
 
 function OwnerDashboard() {
@@ -63,7 +64,31 @@ function OwnerDashboard() {
     });
     const [vehicleTransactions, setVehicleTransactions] = useState({});
 
-    const token = localStorage.getItem('token');
+    // Delete a single transaction
+    const deleteTransaction = async (transactionId) => {
+        if (window.confirm('⚠️ Are you sure you want to delete this transaction? This action cannot be undone.')) {
+            try {
+                await api.delete(`/owner/transaction/${transactionId}`);
+                setMessage({ type: 'success', text: '✅ Transaction deleted successfully!' });
+                loadDashboard(); // Refresh the dashboard
+            } catch (error) {
+                setMessage({ type: 'error', text: error.response?.data?.error || 'Failed to delete transaction' });
+            }
+        }
+    };
+
+    // Delete all transactions for a vehicle
+    const deleteAllTransactions = async (vehicleId) => {
+        if (window.confirm('⚠️⚠️ WARNING: This will delete ALL transaction history for this vehicle! This action cannot be undone. Are you absolutely sure?')) {
+            try {
+                await api.delete(`/owner/vehicle/${vehicleId}/transactions`);
+                setMessage({ type: 'success', text: '✅ All transactions deleted for this vehicle!' });
+                loadDashboard();
+            } catch (error) {
+                setMessage({ type: 'error', text: error.response?.data?.error || 'Failed to delete transactions' });
+            }
+        }
+    };
 
     useEffect(() => {
         loadDashboard();
@@ -424,6 +449,7 @@ function OwnerDashboard() {
                                                         <TableCell><strong>Trip Type</strong></TableCell>
                                                         <TableCell><strong>Reference</strong></TableCell>
                                                         <TableCell><strong>Status</strong></TableCell>
+                                                        <TableCell><strong>Action</strong></TableCell>
                                                     </TableRow>
                                                 </TableHead>
                                                 <TableBody>
@@ -447,11 +473,22 @@ function OwnerDashboard() {
                                                                     size="small"
                                                                 />
                                                             </TableCell>
+                                                            <TableCell>
+                                                                <Button
+                                                                    size="small"
+                                                                    color="error"
+                                                                    variant="outlined"
+                                                                    startIcon={<DeleteIcon />}
+                                                                    onClick={() => deleteTransaction(tx.id)}
+                                                                >
+                                                                    Delete
+                                                                </Button>
+                                                            </TableCell>
                                                         </TableRow>
                                                     ))}
                                                     {(!vehicleTransactions[vehicle.taxi_number] || vehicleTransactions[vehicle.taxi_number].length === 0) && (
                                                         <TableRow>
-                                                            <TableCell colSpan={6} align="center">
+                                                            <TableCell colSpan={7} align="center">
                                                                 No transactions yet
                                                             </TableCell>
                                                         </TableRow>
@@ -459,6 +496,17 @@ function OwnerDashboard() {
                                                 </TableBody>
                                             </Table>
                                         </TableContainer>
+                                        
+                                        <Button
+                                            size="small"
+                                            color="error"
+                                            variant="contained"
+                                            startIcon={<DeleteIcon />}
+                                            onClick={() => deleteAllTransactions(vehicle.id)}
+                                            sx={{ mt: 2 }}
+                                        >
+                                            Delete All Transactions for This Taxi
+                                        </Button>
                                     </AccordionDetails>
                                 </Accordion>
                             );
@@ -490,6 +538,7 @@ function OwnerDashboard() {
                                         <TableCell><strong>Driver</strong></TableCell>
                                         <TableCell><strong>Trip Type</strong></TableCell>
                                         <TableCell><strong>Reference</strong></TableCell>
+                                        <TableCell><strong>Action</strong></TableCell>
                                     </TableRow>
                                 </TableHead>
                                 <TableBody>
@@ -507,11 +556,22 @@ function OwnerDashboard() {
                                                 />
                                             </TableCell>
                                             <TableCell>{tx.reference}</TableCell>
+                                            <TableCell>
+                                                <Button
+                                                    size="small"
+                                                    color="error"
+                                                    variant="outlined"
+                                                    startIcon={<DeleteIcon />}
+                                                    onClick={() => deleteTransaction(tx.id)}
+                                                >
+                                                    Delete
+                                                </Button>
+                                            </TableCell>
                                         </TableRow>
                                     ))}
                                     {(!dashboard?.recent_transactions || dashboard.recent_transactions.length === 0) && (
                                         <TableRow>
-                                            <TableCell colSpan={7} align="center">
+                                            <TableCell colSpan={8} align="center">
                                                 No transactions yet
                                             </TableCell>
                                         </TableRow>
