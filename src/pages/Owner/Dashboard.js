@@ -70,7 +70,7 @@ function OwnerDashboard() {
             try {
                 await api.delete(`/owner/transaction/${transactionId}`);
                 setMessage({ type: 'success', text: '✅ Transaction deleted successfully!' });
-                loadDashboard(); // Refresh the dashboard
+                loadDashboard();
             } catch (error) {
                 setMessage({ type: 'error', text: error.response?.data?.error || 'Failed to delete transaction' });
             }
@@ -496,7 +496,7 @@ function OwnerDashboard() {
                                                 </TableBody>
                                             </Table>
                                         </TableContainer>
-                                        
+
                                         <Button
                                             size="small"
                                             color="error"
