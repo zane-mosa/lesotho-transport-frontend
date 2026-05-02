@@ -19,38 +19,30 @@ import {
     Chip,
     Alert,
     CircularProgress
-    // Divider removed - was unused
 } from '@mui/material';
 import DirectionsBusIcon from '@mui/icons-material/DirectionsBus';
 import AttachMoneyIcon from '@mui/icons-material/AttachMoney';
 import TrendingUpIcon from '@mui/icons-material/TrendingUp';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import { QRCodeSVG } from 'qrcode.react';
-import axios from 'axios';
-
-const API_URL = 'http://localhost:3000/api';
+import api from '../../services/api';
 
 function DriverDashboard() {
     const [dashboard, setDashboard] = useState(null);
     const [assignedVehicle, setAssignedVehicle] = useState(null);
     const [loading, setLoading] = useState(true);
     const [message, setMessage] = useState(null);
-    // const [balance, setBalance] = useState(0); // Removed - not used
     const [confirmingId, setConfirmingId] = useState(null);
 
-    const token = localStorage.getItem('token');
-
-   useEffect(() => {
-    loadAssignedVehicle();
-    loadDashboard();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-}, []);
+    useEffect(() => {
+        loadAssignedVehicle();
+        loadDashboard();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
 
     const loadAssignedVehicle = async () => {
         try {
-            const response = await axios.get(`${API_URL}/driver/assigned-vehicle`, {
-                headers: { Authorization: `Bearer ${token}` }
-            });
+            const response = await api.get('/driver/assigned-vehicle');
             setAssignedVehicle(response.data.vehicle);
         } catch (error) {
             console.error('No assigned vehicle:', error.response?.data?.error);
@@ -62,8 +54,6 @@ function DriverDashboard() {
         try {
             const response = await driverService.getDashboard();
             setDashboard(response.data.dashboard);
-            // const totalEarnings = response.data.dashboard.stats.weekly_earnings;
-            // setBalance(totalEarnings); // Removed
             setLoading(false);
         } catch (error) {
             console.error('Dashboard load error:', error);
@@ -170,7 +160,7 @@ function DriverDashboard() {
                     </Grid>
                 </Grid>
 
-                {/* Assigned Vehicle Info - instead of registration form */}
+                {/* Assigned Vehicle Info */}
                 {assignedVehicle ? (
                     <Paper sx={{ p: 3, mb: 3 }}>
                         <Typography variant="h6" gutterBottom sx={{ fontWeight: 'bold' }}>
@@ -201,7 +191,7 @@ function DriverDashboard() {
                     </Alert>
                 )}
 
-                {/* Driver QR Code for Passengers to Scan - Only show if assigned vehicle exists */}
+                {/* Driver QR Code for Passengers to Scan */}
                 {assignedVehicle && (
                     <Paper sx={{ p: 3, mb: 3, textAlign: 'center', bgcolor: '#e8f5e9' }}>
                         <Typography variant="h6" gutterBottom sx={{ fontWeight: 'bold', color: '#2E7D32' }}>
@@ -225,7 +215,7 @@ function DriverDashboard() {
                     </Paper>
                 )}
 
-                {/* Recent Transactions with Confirm Button */}
+                {/* Recent Transactions */}
                 <Paper sx={{ p: 3 }}>
                     <Typography variant="h6" gutterBottom sx={{ fontWeight: 'bold' }}>
                         📋 Recent Transactions
