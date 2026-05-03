@@ -59,6 +59,24 @@ function PassengerDashboard() {
         loadBalance();
     }, []);
 
+    // NEW: Check for scanned taxi number from QR code
+    useEffect(() => {
+        // Check if there's a taxi number from QR scan
+        const scanTaxiNumber = localStorage.getItem('scanTaxiNumber');
+        const scanDriverId = localStorage.getItem('scanDriverId');
+        
+        if (scanTaxiNumber) {
+            setTaxiNumber(scanTaxiNumber);
+            // Auto-check the taxi number after a short delay
+            setTimeout(() => {
+                checkTaxiNumber();
+            }, 500);
+            // Clear after using
+            localStorage.removeItem('scanTaxiNumber');
+            localStorage.removeItem('scanDriverId');
+        }
+    }, []);
+
     const loadHistory = async () => {
         try {
             const response = await paymentService.getHistory();

@@ -12,6 +12,8 @@ import DriverDashboard from './pages/Driver/Dashboard';
 import ConfirmPayment from './pages/Driver/ConfirmPayment';
 // Add OwnerDashboard import
 import OwnerDashboard from './pages/Owner/Dashboard';
+// Add PassengerEntryPage import for QR code scanning
+import PassengerEntryPage from './pages/Passenger/EntryPage';
 import { AppBar, Toolbar, Typography, Button, Container, Box } from '@mui/material';
 
 // Create theme
@@ -81,9 +83,15 @@ function AppRoutes() {
                         path="/register" 
                         element={!user ? <Register /> : <Navigate to={user.role === 'driver' ? '/driver' : user.role === 'owner' ? '/owner' : '/passenger'} />} 
                     />
+                    {/* Passenger route - redirects to entry page if not logged in */}
                     <Route 
                         path="/passenger" 
-                        element={user && user.role === 'passenger' ? <PassengerDashboard /> : <Navigate to="/login" />} 
+                        element={user && user.role === 'passenger' ? <PassengerDashboard /> : <Navigate to="/passenger/entry" />} 
+                    />
+                    {/* Passenger entry page for QR code scanning */}
+                    <Route 
+                        path="/passenger/entry" 
+                        element={<PassengerEntryPage />} 
                     />
                     <Route 
                         path="/driver" 
@@ -123,4 +131,4 @@ function App() {
     );
 }
 
-export default App;" " 
+export default App;

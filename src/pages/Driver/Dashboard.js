@@ -73,15 +73,11 @@ function DriverDashboard() {
         setConfirmingId(null);
     };
 
-    const getDriverQRData = () => {
+    // REPLACED: Now returns a URL instead of JSON
+    const getDriverQRUrl = () => {
         if (!assignedVehicle) return '';
-        return JSON.stringify({
-            type: 'driver_payment',
-            taxi_number: assignedVehicle.taxi_number,
-            driver_id: assignedVehicle.id,
-            route: assignedVehicle.route,
-            timestamp: new Date().toISOString()
-        });
+        const frontendUrl = process.env.REACT_APP_FRONTEND_URL || 'https://lesotho-transport.netlify.app';
+        return `${frontendUrl}/passenger?taxi=${assignedVehicle.taxi_number}&driver=${assignedVehicle.id}`;
     };
 
     if (loading) {
@@ -191,18 +187,18 @@ function DriverDashboard() {
                     </Alert>
                 )}
 
-                {/* Driver QR Code for Passengers to Scan */}
+                {/* Driver QR Code for Passengers to Scan - UPDATED to use URL */}
                 {assignedVehicle && (
                     <Paper sx={{ p: 3, mb: 3, textAlign: 'center', bgcolor: '#e8f5e9' }}>
                         <Typography variant="h6" gutterBottom sx={{ fontWeight: 'bold', color: '#2E7D32' }}>
                             📱 Passenger Scan to Pay
                         </Typography>
                         <Typography variant="body2" color="textSecondary" gutterBottom>
-                            Passengers can scan this QR code to pay for their trip
+                            Scan this QR code to pay for your trip
                         </Typography>
                         <Box sx={{ mt: 2, display: 'inline-block', bgcolor: 'white', p: 2, borderRadius: 2 }}>
                             <QRCodeSVG 
-                                value={getDriverQRData()} 
+                                value={getDriverQRUrl()} 
                                 size={180} 
                             />
                         </Box>
@@ -210,7 +206,7 @@ function DriverDashboard() {
                             Taxi: {assignedVehicle.taxi_number} | Route: {assignedVehicle.route}
                         </Typography>
                         <Typography variant="caption" display="block" color="textSecondary">
-                            Passenger: Scan this QR code to pay for your trip
+                            Scan to open app and pay
                         </Typography>
                     </Paper>
                 )}

@@ -28,10 +28,15 @@ function Login() {
 
         const result = await login({ phone_number: phone, password });
         
+        // After login success, check if there's a taxi number waiting from QR scan
         if (result.success) {
-            // Redirect based on role
-            if (result.user.role === 'driver') {
+            const scanTaxiNumber = localStorage.getItem('scanTaxiNumber');
+            if (scanTaxiNumber && result.user.role === 'passenger') {
+                navigate('/passenger');
+            } else if (result.user.role === 'driver') {
                 navigate('/driver');
+            } else if (result.user.role === 'owner') {
+                navigate('/owner');
             } else {
                 navigate('/passenger');
             }
