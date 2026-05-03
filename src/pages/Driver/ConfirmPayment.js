@@ -4,6 +4,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { driverService } from '../../services/api';
 import { Container, Paper, Typography, Box, Button, Alert, CircularProgress } from '@mui/material';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import api from '../../services/api';
 
 function ConfirmPayment() {
     const { reference } = useParams();
@@ -15,21 +16,19 @@ function ConfirmPayment() {
     useEffect(() => {
         const checkTransaction = async () => {
             try {
-                // Fetch transaction details
-                const response = await fetch(`http://localhost:3000/api/payments/status/${reference}`, {
-                    headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
-                });
-                const data = await response.json();
-                setTransaction(data.transaction);
+                // Fetch transaction details using api instance
+                const response = await api.get(`/payments/status/${reference}`);
+                setTransaction(response.data.transaction);
                 setLoading(false);
             } catch (error) {
+                console.error('Failed to load transaction:', error);
                 setMessage({ type: 'error', text: 'Failed to load transaction' });
                 setLoading(false);
             }
         };
         
         checkTransaction();
-    }, [reference]); // Added reference as dependency
+    }, [reference]);
 
     const confirmPayment = async () => {
         try {

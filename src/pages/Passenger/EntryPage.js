@@ -12,10 +12,12 @@ function PassengerEntryPage() {
         const taxiNumber = params.get('taxi');
         const driverId = params.get('driver');
 
+        console.log('QR Scan - Taxi:', taxiNumber, 'Driver:', driverId);
+
         // Store in localStorage for after login
         if (taxiNumber) {
             localStorage.setItem('scanTaxiNumber', taxiNumber);
-            localStorage.setItem('scanDriverId', driverId);
+            localStorage.setItem('scanDriverId', driverId || '');
         }
 
         // Check if user is logged in
@@ -33,7 +35,7 @@ function PassengerEntryPage() {
 
     return (
         <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
-            <h3>Redirecting...</h3>
+            <h3>Redirecting to payment...</h3>
         </div>
     );
 }
