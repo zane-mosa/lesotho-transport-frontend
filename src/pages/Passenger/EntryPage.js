@@ -12,25 +12,31 @@ function PassengerEntryPage() {
         const taxiNumber = params.get('taxi');
         const driverId = params.get('driver');
 
-        console.log('QR Scan - Taxi:', taxiNumber, 'Driver:', driverId);
+        console.log('QR Scan - Saving Taxi:', taxiNumber);
 
         // Store in localStorage for after login
         if (taxiNumber) {
             localStorage.setItem('scanTaxiNumber', taxiNumber);
-            localStorage.setItem('scanDriverId', driverId || '');
+            if (driverId) {
+                localStorage.setItem('scanDriverId', driverId);
+            }
         }
 
         // Check if user is logged in
         const token = localStorage.getItem('token');
-        const user = localStorage.getItem('user');
+        const userStr = localStorage.getItem('user');
 
-        if (token && user) {
-            // Already logged in, go to passenger dashboard
-            navigate('/passenger');
-        } else {
-            // Not logged in, go to login page
-            navigate('/login');
+        if (token && userStr) {
+            try {
+                const user = JSON.parse(userStr);
+                if (user.role === 'passenger') {
+                    navigate('/passenger');
+                    return;
+                }
+            } catch (e) {}
         }
+        
+        navigate('/login');
     }, [location, navigate]);
 
     return (

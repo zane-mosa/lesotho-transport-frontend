@@ -8,11 +8,8 @@ import Login from './components/Auth/Login';
 import Register from './components/Auth/Register';
 import PassengerDashboard from './pages/Passenger/Dashboard';
 import DriverDashboard from './pages/Driver/Dashboard';
-// a) Add import
 import ConfirmPayment from './pages/Driver/ConfirmPayment';
-// Add OwnerDashboard import
 import OwnerDashboard from './pages/Owner/Dashboard';
-// Add PassengerEntryPage import for QR code scanning
 import PassengerEntryPage from './pages/Passenger/EntryPage';
 import { AppBar, Toolbar, Typography, Button, Container, Box } from '@mui/material';
 
@@ -20,10 +17,10 @@ import { AppBar, Toolbar, Typography, Button, Container, Box } from '@mui/materi
 const theme = createTheme({
     palette: {
         primary: {
-            main: '#2E7D32', // Lesotho green
+            main: '#2E7D32',
         },
         secondary: {
-            main: '#FFA000', // Amber/gold
+            main: '#FFA000',
         },
     },
     typography: {
@@ -83,12 +80,10 @@ function AppRoutes() {
                         path="/register" 
                         element={!user ? <Register /> : <Navigate to={user.role === 'driver' ? '/driver' : user.role === 'owner' ? '/owner' : '/passenger'} />} 
                     />
-                    {/* Passenger route - redirects to entry page if not logged in */}
                     <Route 
                         path="/passenger" 
                         element={user && user.role === 'passenger' ? <PassengerDashboard /> : <Navigate to="/passenger/entry" />} 
                     />
-                    {/* Passenger entry page for QR code scanning */}
                     <Route 
                         path="/passenger/entry" 
                         element={<PassengerEntryPage />} 
@@ -97,12 +92,10 @@ function AppRoutes() {
                         path="/driver" 
                         element={user && user.role === 'driver' ? <DriverDashboard /> : <Navigate to="/login" />} 
                     />
-                    {/* b) Add route */}
                     <Route 
                         path="/driver/confirm/:reference" 
                         element={user && user.role === 'driver' ? <ConfirmPayment /> : <Navigate to="/login" />} 
                     />
-                    {/* Add Owner route */}
                     <Route 
                         path="/owner" 
                         element={user && user.role === 'owner' ? <OwnerDashboard /> : <Navigate to="/login" />} 

@@ -61,9 +61,10 @@ function PassengerDashboard() {
 
     // NEW: Check for scanned taxi number from QR code
     useEffect(() => {
-        // Check if there's a taxi number from QR scan
         const scanTaxiNumber = localStorage.getItem('scanTaxiNumber');
         const scanDriverId = localStorage.getItem('scanDriverId');
+        
+        console.log('Dashboard loaded - Checking for scanTaxiNumber:', scanTaxiNumber);
         
         if (scanTaxiNumber) {
             setTaxiNumber(scanTaxiNumber);
@@ -98,7 +99,6 @@ function PassengerDashboard() {
         }
     };
 
-    // Updated checkTaxiNumber function - uses api instance
     const checkTaxiNumber = async () => {
         if (!taxiNumber.trim()) {
             setTaxiValid(null);
